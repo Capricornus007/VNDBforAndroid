@@ -33,7 +33,7 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > release.jks
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d -i > release.jks
 
           APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
           SIGNED_APK_PATH="app/build/outputs/apk/release/VNDBforAndroid-signed.apk"
