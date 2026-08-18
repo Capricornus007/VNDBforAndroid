@@ -27,13 +27,14 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Sign APK with Embedded Keystore
+      - name: Sign APK with Persistent Keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          printf '%s' "$KEYSTORE_BASE64" | base64 -d -i > release.jks
+          # 使用 Python 進行嚴格的 Base64 解碼，避免 Shell 命令工具相容性問題
+          python3 -c "import os, base64; open('release.jks', 'wb').write(base64.b64decode(os.environ['KEYSTORE_BASE64']))"
 
           APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
           SIGNED_APK_PATH="app/build/outputs/apk/release/VNDBforAndroid-signed.apk"
