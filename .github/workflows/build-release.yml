@@ -29,9 +29,57 @@ jobs:
 
       - name: Sign APK with Fixed Embedded Keystore
         run: |
-          KEYSTORE_BASE64="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"[cite: 1]
-
-          echo "$KEYSTORE_BASE64" | base64 -d > release.jks
+          cat << 'EOF' | base64 -d > release.jks
+          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
+          JxA=
+          EOF
 
           APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
           SIGNED_APK_PATH="app/build/outputs/apk/release/VNDBforAndroid-signed.apk"
@@ -48,14 +96,12 @@ jobs:
 
           echo "SIGNED_APK_PATH=$SIGNED_APK_PATH" >> $GITHUB_ENV
 
-      # 保存打包產物，手動觸發時可以在 Actions 詳情頁底部的 Artifacts 直接下載
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: VNDBforAndroid-signed
           path: ${{ env.SIGNED_APK_PATH }}
 
-      # 自動發布到 GitHub Release（推送任何 Tag 時觸發）
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
