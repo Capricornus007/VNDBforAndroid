@@ -1,56 +1,39 @@
-- name: Sign APK with Fixed Embedded Keystore
+name: Build and Release APK
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Sign APK with Embedded Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          cat << 'EOF' | base64 -d > release.jks
-          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
-          JxA=
-          EOF
+          echo "$KEYSTORE_BASE64" | base64 -d > release.jks
 
           APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
           SIGNED_APK_PATH="app/build/outputs/apk/release/VNDBforAndroid-signed.apk"
@@ -59,10 +42,25 @@
           
           $BUILD_TOOLS_DIR/apksigner sign \
             --ks release.jks \
-            --ks-pass pass:"123456" \
-            --ks-key-alias "release_key" \
-            --key-pass pass:"123456" \
+            --ks-pass pass:"$KEYSTORE_PASSWORD" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --key-pass pass:"$KEYSTORE_PASSWORD" \
             --out $SIGNED_APK_PATH \
             $APK_PATH
 
           echo "SIGNED_APK_PATH=$SIGNED_APK_PATH" >> $GITHUB_ENV
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VNDBforAndroid-signed
+          path: ${{ env.SIGNED_APK_PATH }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ${{ env.SIGNED_APK_PATH }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
